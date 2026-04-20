@@ -29,7 +29,13 @@ const studentSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    trim: true
+    trim: true,
+    validate: {
+      validator: function(v) {
+        return !v || /^\+639\d{9}$/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number! Phone must start with +639 followed by 9 digits`
+    }
   },
   dateOfBirth: {
     type: Date
@@ -59,7 +65,7 @@ const studentSchema = new mongoose.Schema({
   course: {
     type: String,
     required: true,
-    enum: ['BSIT', 'BSCS', 'BSIS', 'ACT']
+    enum: ['BSIT', 'BSCS']
   },
   yearLevel: {
     type: Number,
