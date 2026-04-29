@@ -9,12 +9,23 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL 
-    : 'http://localhost:5173',
-  credentials: true
-}));
+// CORS configuration:
+// - In production, use the configured FRONTEND_URL.
+// - In development, relax CORS so `http://localhost:5173` (Vite) can access
+//   the API. This also allows tools like Postman (no origin) to work.
+// NOTE: Keep this permissive behavior only for local development.
+if (process.env.NODE_ENV === 'production') {
+  app.use(cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true
+  }));
+} else {
+  // Development: reflect request origin (allows localhost dev server)
+  app.use(cors({
+    origin: true,
+    credentials: true
+  }));
+}
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -34,11 +45,15 @@ app.use('/api/faculty', require('./routes/faculty'));
 app.use('/api/violations', require('./routes/violations'));
 app.use('/api/skills', require('./routes/skills'));
 app.use('/api/affiliations', require('./routes/affiliations'));
+app.use('/api/organizations', require('./routes/organizations'));
 app.use('/api/activities', require('./routes/activities'));
 app.use('/api/instruction', require('./routes/instruction'));
 app.use('/api/schedules', require('./routes/schedules'));
 app.use('/api/events', require('./routes/events'));
 app.use('/api/query', require('./routes/query'));
+app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/subjects', require('./routes/subjects'));
+app.use('/api/reports', require('./routes/reports'));
 
 // Health check
 app.get('/api/health', (req, res) => {

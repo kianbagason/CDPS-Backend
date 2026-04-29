@@ -2,6 +2,10 @@ const Schedule = require('../models/Schedule');
 const Student = require('../models/Student');
 const Faculty = require('../models/Faculty');
 
+function escapeRegExp(string) {
+  return String(string).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 // @desc    Get all schedules
 // @route   GET /api/schedules
 // @access  Private
@@ -11,7 +15,7 @@ exports.getAllSchedules = async (req, res) => {
     
     const query = {};
     if (course) query.course = course;
-    if (section) query.section = section;
+    if (section) query.section = new RegExp(`^${escapeRegExp(section)}$`, 'i');
     if (faculty) query.faculty = faculty;
     if (semester) query.semester = semester;
     if (year) query.year = parseInt(year);
@@ -236,7 +240,7 @@ exports.getEnrolledStudents = async (req, res) => {
     // Find students matching the course and section
     const students = await Student.find({
       course: schedule.course,
-      section: schedule.section
+      section: new RegExp(`^${escapeRegExp(schedule.section || '')}$`, 'i')
     }).select('studentNumber firstName lastName email course yearLevel');
 
     res.json({

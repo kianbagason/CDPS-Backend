@@ -59,7 +59,7 @@ const studentSchema = new mongoose.Schema({
   course: {
     type: String,
     required: true,
-    enum: ['BSIT', 'BSCS', 'BSIS', 'ACT']
+    enum: ['BSIT', 'BSCS']
   },
   yearLevel: {
     type: Number,
@@ -114,22 +114,24 @@ const studentSchema = new mongoose.Schema({
     dateAcquired: Date
   }],
 
-  // Affiliations (Orgs, Sports)
+  // Affiliations (school orgs/groups)
   affiliations: [{
-    organizationName: {
+    name: {
       type: String,
       required: true
     },
-    role: String,
-    type: {
+    role: {
       type: String,
-      enum: ['organization', 'sports', 'club'],
-      required: true
+      enum: ['Member', 'Officer', 'President', 'Treasurer', 'Secretary'],
+      default: 'Member'
     },
-    startDate: Date,
-    endDate: Date
+    dateJoined: {
+      type: Date,
+      default: Date.now
+    }
   }],
 
+  
   // Non-Academic Activities
   nonAcademicActivities: [{
     activityName: {
@@ -150,6 +152,7 @@ const studentSchema = new mongoose.Schema({
       required: true
     },
     description: String,
+    message: String,
     date: {
       type: Date,
       default: Date.now

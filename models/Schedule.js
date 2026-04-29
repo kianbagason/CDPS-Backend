@@ -4,7 +4,7 @@ const scheduleSchema = new mongoose.Schema({
   course: {
     type: String,
     required: true,
-    enum: ['BSIT', 'BSCS', 'BSIS', 'ACT']
+    enum: ['BSIT', 'BSCS']
   },
   section: {
     type: String,
@@ -38,7 +38,7 @@ const scheduleSchema = new mongoose.Schema({
   day: {
     type: String,
     required: true,
-    enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    enum: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   },
   startTime: {
     type: String,

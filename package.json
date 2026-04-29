@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js",
+    "dev": "nodemon --watch server.js --watch controllers --watch models --watch routes server.js",
     "create-admin": "node scripts/createDefaultAdmin.js"
   },
   "keywords": ["ccs", "profiling", "mern"],

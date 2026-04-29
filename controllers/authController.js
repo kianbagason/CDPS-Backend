@@ -15,7 +15,7 @@ const generateToken = (id) => {
 // @access  Public
 exports.login = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, role: requestedRole } = req.body;
 
     // Validate input
     if (!username || !password) {
@@ -40,6 +40,15 @@ exports.login = async (req, res) => {
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials'
+      });
+    }
+
+    // If a role was requested (from the frontend), ensure it matches the user's role
+    if (requestedRole && requestedRole !== user.role) {
+      const roleLabel = requestedRole === 'faculty' ? 'faculty' : 'student';
+      return res.status(401).json({
+        success: false,
+        message: `That is not a ${roleLabel} account`
       });
     }
 

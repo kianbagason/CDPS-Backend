@@ -1,5 +1,9 @@
 const Student = require('../models/Student');
 
+function escapeRegExp(string) {
+  return String(string).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 // @desc    Advanced student query/filter system
 // @route   GET /api/query/students
 // @access  Private
@@ -30,9 +34,9 @@ exports.queryStudents = async (req, res) => {
       query.yearLevel = parseInt(yearLevel);
     }
 
-    // Filter by section
+    // Filter by section (case-insensitive exact match)
     if (section) {
-      query.section = section;
+      query.section = new RegExp(`^${escapeRegExp(section)}$`, 'i');
     }
 
     // Filter by status

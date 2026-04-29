@@ -7,8 +7,21 @@ const { generateFacultyUsername, generatePassword } = require('../utils/generate
 // @access  Private (Admin)
 exports.getAllFaculty = async (req, res) => {
   try {
-    const faculty = await Faculty.find()
+    const { q, limit = 20 } = req.query;
+    const query = {};
+    if (q) {
+      const reg = new RegExp(String(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      query.$or = [
+        { firstName: reg },
+        { lastName: reg },
+        { facultyId: reg },
+        { email: reg }
+      ];
+    }
+
+    const faculty = await Faculty.find(query)
       .populate('userId', 'username role createdAt')
+      .limit(parseInt(limit))
       .sort({ lastName: 1 });
 
     res.json({

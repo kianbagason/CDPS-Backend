@@ -9,7 +9,7 @@ const {
 } = require('../controllers/facultyController');
 const { protect, authorize } = require('../middleware/auth');
 
-router.get('/', protect, authorize('admin', 'faculty'), getAllFaculty);
+router.get('/', getAllFaculty);
 router.get('/:id', protect, getFaculty);
 router.post('/', protect, authorize('admin'), createFaculty);
 router.put('/:id', protect, authorize('admin'), updateFaculty);
