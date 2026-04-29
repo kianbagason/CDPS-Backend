@@ -173,6 +173,8 @@ const studentSchema = new mongoose.Schema({
       default: 'pending'
     },
     sanction: String
+    ,
+    reportUrl: String
   }],
 
   // Reference to User account
