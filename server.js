@@ -8,24 +8,29 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
-// CORS configuration:
-// - In production, use the configured FRONTEND_URL.
-// - In development, relax CORS so `http://localhost:5173` (Vite) can access
-//   the API. This also allows tools like Postman (no origin) to work.
-// NOTE: Keep this permissive behavior only for local development.
-if (process.env.NODE_ENV === 'production') {
-  app.use(cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true
-  }));
-} else {
-  // Development: reflect request origin (allows localhost dev server)
-  app.use(cors({
-    origin: true,
-    credentials: true
-  }));
-}
+// Middleware - CORS configuration
+const allowedOrigins = [
+  'http://localhost:5173',  // Local development
+  'https://cdps-pnc.vercel.app',  // Production Vercel
+  process.env.FRONTEND_URL  // Custom frontend URL from env
+].filter(Boolean);
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -54,6 +59,8 @@ app.use('/api/query', require('./routes/query'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/subjects', require('./routes/subjects'));
 app.use('/api/reports', require('./routes/reports'));
+app.use('/api/classes', require('./routes/classes'));
+app.use('/api/submissions', require('./routes/submissions'));
 
 // Health check
 app.get('/api/health', (req, res) => {
